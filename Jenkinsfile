@@ -10,11 +10,7 @@ pipeline {
         string(name: 'tomcat_prod', defaultValue: '52.212.38.156', description: 'Production Server')
     }
 
-    triggers {
-        pollSCM('* * * * *')
-    }
-
-    stages{
+stages{
         stage('Build'){
             steps {
                 sh 'mvn clean package'
@@ -26,22 +22,21 @@ pipeline {
                 }
             }
         }
-    
+
         stage ('Deployments'){
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_dev}:/var/lib/tomcat7/webapps"
+                        sh "scp -i /home/jenkins/tomcat-demo.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat7/webapps"
                     }
                 }
 
-                stage ("Deploy to Production") {
+                stage ("Deploy to Production"){
                     steps {
-                        sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_prod}:/var/lib/tomcat7/webapps"
+                        sh "scp -i /home/jenkins/tomcat-demo.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat7/webapps"
                     }
                 }
             }
         }
     }
-
 }
