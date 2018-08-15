@@ -26,19 +26,19 @@ pipeline {
                 }
             }
         }
-    }
-
-    stage ('Deployments'){
-        parallel{
-            stage ('Deploy to Staging'){
-                steps {
-                    sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_dev}:/var/lib/tomcat7/webapps"
+    
+        stage ('Deployments'){
+            parallel{
+                stage ('Deploy to Staging'){
+                    steps {
+                        sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_dev}:/var/lib/tomcat7/webapps"
+                    }
                 }
-            }
 
-            stage ("Deploy to Production") {
-                steps {
-                    sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_prod}:/var/lib/tomcat7/webapps"
+                stage ("Deploy to Production") {
+                    steps {
+                        sh "scp -i /Users/praladrawut/Downloads/tomcat.pem **/target/*.war ect-user@{params.tomcat_prod}:/var/lib/tomcat7/webapps"
+                    }
                 }
             }
         }
